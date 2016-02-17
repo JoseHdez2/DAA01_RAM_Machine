@@ -1,0 +1,9 @@
+# Comments
+q1 q2 q3 # state set
+a1 a2 a3 # input alphabet
+a1 a2 a3 # output alphabet
+q1 # initial state
+b # blank symbol
+q2 q3 # acceptance states
+q1 a1 q2 a2 m # transition function: d(q1,a1) = (q2,a2,m)
+# each of the transitions in a new line

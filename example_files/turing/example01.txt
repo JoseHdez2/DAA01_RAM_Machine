@@ -1,0 +1,26 @@
+#-----------------------------
+# Accepted language
+#-----------------------------
+#
+# L = (xyz)*z(xyz)*
+#
+# Any strings that contain a 'z'.
+
+#----------------------------
+# Machine definition
+#----------------------------
+
+s1 s2 # state set
+x y z # input alphabet
+x y z - # output alphabet
+s1 # initial state
+- # blank symbol
+s2 # acceptance states
+
+#-------------------------------------------
+# Transition functions: d(q1,a1) = (q2,a2,m)
+#-------------------------------------------
+
+s1 x s1 x R
+s1 y s1 y R
+s1 z s2 z R 

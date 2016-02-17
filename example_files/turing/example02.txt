@@ -1,0 +1,34 @@
+#-----------------------------
+# Accepted language
+#-----------------------------
+#
+# L = a{n}b{m}, where m > n, n > 0
+#
+# One or more a's followed by a greater number of b's.
+
+#----------------------------
+# Machine definition
+#----------------------------
+
+q0 q1 q2 q3 q4 q5 # state set
+a b # input alphabet
+a b B - # output alphabet
+q0 # initial state
+- # blank symbol
+q5 # acceptance states
+
+#-------------------------------------------
+# Transition functions: d(q1,a1) = (q2,a2,m)
+#-------------------------------------------
+
+q0 a q1 - R
+q0 B q3 B R
+q1 B q1 B R
+q1 a q1 a R
+q1 b q2 B L
+q2 a q2 a L
+q2 B q2 B L
+q3 b q4 b R
+q3 B q3 B R
+q4 b q4 b R
+q4 - q5 - R

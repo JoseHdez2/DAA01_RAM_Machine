@@ -1,0 +1,15 @@
+# Language:
+# All a+b+ strings such that
+# there is the same number of a's and b's.
+
+p q # state set
+a b # input string alphabet
+S A # stack alphabet
+p # initial state
+S # initial stack symbol
+- # acceptance state set
+# transition functions d(q1,a1,A1)=(q2,A2)
+p a S p A
+p a A p A,A
+p b A q -
+q b A q - 

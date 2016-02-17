@@ -1,0 +1,9 @@
+# Comentarios
+q1 q2 q3 # conjunto de estados
+a1 a2 a3 # alfabeto de cadena de entrada
+A1 A2 A3 # alfabeto de pila
+q1 # estado inicial
+A1 # simbolo inicial de la pila
+q2 q3 # conjunto de estados de aceptacion
+q1 a1 A1 q2 A2 # funcion de transicion d(q1,a1,A1)=(q2,A2)
+# cada una de las transiciones en una linea distinta

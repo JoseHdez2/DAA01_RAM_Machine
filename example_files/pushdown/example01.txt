@@ -1,0 +1,11 @@
+# Language:
+# L= a+
+
+q r s # state set
+a b c # input string alphabet
+A B C # stack alphabet
+q # initial state
+A # initial stack symbol
+b c # acceptance state set
+q a A q A # transition functions d(q1,a1,A1)=(q2,A2)
+q a A r -

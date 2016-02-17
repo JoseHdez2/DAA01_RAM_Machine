@@ -1,0 +1,9 @@
+# Comment
+q1 q2 q3 # state set
+a1 a2 a3 # input string alphabet
+A1 A2 A3 # stack alphabet
+q1 # initial state
+A1 # initial stack symbol
+q2 q3 # acceptance state set
+q1 a1 A1 q2 A2 # transition functions d(q1,a1,A1)=(q2,A2)
+# each transition function in a new line
