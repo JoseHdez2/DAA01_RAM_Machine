@@ -20,7 +20,7 @@ public class RAM_Auto implements Automaton{
     
     SimState simState;  // Current state of the simulation: initial, ongoing or final.
     
-    static String SEP = "|";    // Separator, for visibly reducing whitespace etc.
+    static String SEP = "|";    // Token separator, for visibly reducing whitespace, etc. TODO: weird phrasing
     
     public RAM_Auto(){
         initialize();
@@ -30,12 +30,32 @@ public class RAM_Auto implements Automaton{
      * AutomatonImpl methods.
      */
     
+    public Instruction.RefType parseOperandType(String opStr){
+        assert(opStr.matches("[=*]?\\d"));
+        int op = Integer.valueOf(opStr.substring(1));
+        if(opStr.charAt(0) == '=') return Instruction.RefType.LITERAL; 
+        if(opStr.charAt(0) == '*') return Instruction.RefType.INDIRECT;
+        else return Instruction.RefType.DIRECT;
+    }
+    
+    /*
+     * Simulation methods
+     */
+    
+    public Integer getOperandValue(String opStr){
+        assert(opStr.matches("[=*]?\\d"));
+        int op = Integer.valueOf(opStr.substring(1));
+        if(opStr.charAt(0) == '=') return op; 
+        if(opStr.charAt(0) == '*') return regs.get(regs.get(op));
+        else return regs.get(op);
+    }
+    
     /*
      * Automaton methods.
      */
 
-    Predicate<String> notCode(){
-        return p -> p.length() == 1;
+    Predicate<String> emptyLine(){
+        return p -> p.isEmpty();
     }
     
     @Override
@@ -46,31 +66,50 @@ public class RAM_Auto implements Automaton{
         
         String[] lines = dataContent.split(System.getProperty("line.separator")); // http://stackoverflow.com/a/1096633/3399416
         
+        for (int i = 0; i < lines.length; i++){
+            // Remove comments. Only keep what's before the ';' (comment separator).
+            lines[i] = lines[i].split(";")[0];
+            // Replace whitespace with separators.
+            lines[i] = lines[i].trim().replaceAll("\\s+", SEP);
+        }
         ArrayList<String> lines2 = new ArrayList<String>(Arrays.asList(lines));
 
         System.out.println(lines2);
         
-        for (int i = 0; i < lines.length; i++){
-            // Remove comments.
-            String[] toks = lines[i].split(";");
-            assert(toks.length != 0);
-            lines[i] = toks[0]; // Only save what's before the separator.
-            // Replace whitespace with separators.
-            lines[i] = lines[i].trim().replaceAll("\\s+", "|");
-        }
-        lines2 = new ArrayList<String>(Arrays.asList(lines));
-
-        System.out.println(lines2);
         // Only keep the lines with code.
-        lines2.removeIf(notCode());
+        lines2.removeIf(emptyLine());
+        
         System.out.println(lines2);
         System.exit(0);
-        for (int i = 0; i < lines.length; i++){
-            
-        }
+
         // Do actual parsing
-        for (int i = 0; i < lines.length; i++){
-            
+        for (int i = 0; i < lines2.size(); i++){
+            String[] thisLine = lines2.get(i).split(SEP);
+            // Detect tags/"goto"s and add them
+            if (thisLine.length > 1 && thisLine[1] == ":"){
+                gotos.put(thisLine[0], i);  // Add goto with key= token 0 and value= this line's index.
+                thisLine = lines2.get(i).split(":")[1].split(SEP);  // 'Remove' tag/goto.
+            }
+            assert(thisLine.length <= 2); // Instruction and optional operand
+            Instruction.InsType insType = null;
+            switch(Instruction.InsType.valueOf(thisLine[0].toUpperCase())){
+            case ADD: insType = Instruction.InsType.ADD; break;
+            case DIV: insType = Instruction.InsType.DIV; break;
+            case HALT:insType = Instruction.InsType.HALT; break;
+            case JGTZ:insType = Instruction.InsType.JGTZ; break;
+            case JUMP:insType = Instruction.InsType.JUMP; break;
+            case JZERO:insType = Instruction.InsType.JZERO; break;
+            case LOAD:insType = Instruction.InsType.LOAD; break;
+            case MUL:insType = Instruction.InsType.MUL; break;
+            case READ:insType = Instruction.InsType.READ; break;
+            case STORE:insType = Instruction.InsType.STORE; break;
+            case SUB:insType = Instruction.InsType.SUB; break;
+            case WRITE:insType = Instruction.InsType.WRITE; break;
+            default:
+                System.out.println("Unrecognized instruction: Halting load process.");
+                break;
+            }
+//            instructions.add(new Instruction());
         }
     }
 

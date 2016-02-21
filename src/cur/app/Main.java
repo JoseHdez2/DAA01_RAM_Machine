@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         System.out.println("New app");
         RAM_Auto ar = new RAM_Auto();
-        String content = new Scanner(new File("example_files/ram/test1.ram")).useDelimiter("\\Z").next();
+        String content = new Scanner(new File("example_files/ram/test2.ram")).useDelimiter("\\Z").next();
         ar.loadTransitions(content);
 //        new FrameLoad(ar);
     }
