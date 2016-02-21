@@ -10,7 +10,7 @@ import javax.swing.Timer;
 public class FrameLoad extends JFrame{
     
     Automaton automaton;    // Automaton instance which we simulate.
-    JButton btnLoad;    //
+    JButton btnLoad;    // Load automaton data from file (and initialize simulation).
     JButton btnStep;   // Perform a step of the simulation.
     JButton btnRun;    // Step until the simulation ends.
     Timer runTimer;     // Determines step frequency when running simulation.

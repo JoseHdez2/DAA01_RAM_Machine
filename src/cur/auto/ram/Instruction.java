@@ -11,7 +11,12 @@ public class Instruction {
         WRITE,  // Write 'op' into output registry.
         ADD,
         SUB,
-        
+        MUL,
+        DIV,
+        HALT,
+        JUMP,
+        JZERO,
+        JGTZ,
     }
     
     // Reference type.
