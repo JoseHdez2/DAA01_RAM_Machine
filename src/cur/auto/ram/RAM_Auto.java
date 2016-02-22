@@ -35,11 +35,14 @@ public class RAM_Auto implements Automaton{
      */
     
     public Integer getOperandValue(String opStr){
-        assert(opStr.matches("[=*]?\\d"));
+        assert(Instruction.isNumericOperand(opStr)); // Is already checked at load time.
         int op = Integer.valueOf(opStr.substring(1));
         if(opStr.charAt(0) == '=') return op; 
         if(opStr.charAt(0) == '*') return regs.get(regs.get(op));
-        else return regs.get(op);
+        else {
+            assert(opStr.matches("\\d+"));
+            return regs.get(op);
+        }
     }
     
     /*
@@ -108,7 +111,9 @@ public class RAM_Auto implements Automaton{
                 break;
             }
             if (thisLine.length == 2){
-                assert(thisLine[1].matches("[=*]?\\d")); // Check for valid operand syntax.
+                
+                // Check for valid operand syntax.
+                assert(Instruction.isNameOperand(thisLine[1]) || Instruction.isNumericOperand(thisLine[1]));
                 instructions.add(new Instruction(insType, thisLine[1]));
             }
             else instructions.add(new Instruction(insType));
