@@ -21,23 +21,35 @@ public class Instruction {
         JGTZ,   // Jump to line specified by tag if referenced value is greater than zero.
     }
     
-    // Static, semantic classifications of instructions. Simplifies operand validity check.
-    
-    // TODO: would a HashMap<insType, opTypesItTakes> be better? Probably not.
-    
-    // Much needed syntactic sugar. Not sure this static hash thing was a good idea.
-    private static <T> ArrayList<T> newArrayList(Object... objects){
-        ArrayList<T> al = new ArrayList<T>();
-        for (int i = 0; i < objects.length; i++) al.add((T)objects[i]);
-        return al;
-    }
-    
+    // HashMap with key= the instruction type and values= the operand types it takes.
     private static HashMap<InsType, ArrayList<OpType>> validOperands;
     static
     {
         validOperands = new HashMap<InsType, ArrayList<OpType>>();
-        validOperands.put(InsType.LOAD, newArrayList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT));
-        validOperands.put(InsType.HALT, new ArrayList<OpType>(Arrays.asList(OpType.NONE)));
+        validOperands.put(InsType.LOAD, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.STORE, 
+                new ArrayList<OpType>(Arrays.asList(                    OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.READ, 
+                new ArrayList<OpType>(Arrays.asList(                    OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.WRITE, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.ADD, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.SUB, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.MUL, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.DIV, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT)));
+        validOperands.put(InsType.JUMP, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NAME)));
+        validOperands.put(InsType.JZERO, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NAME)));
+        validOperands.put(InsType.JGTZ, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NAME)));
+        validOperands.put(InsType.HALT, 
+                new ArrayList<OpType>(Arrays.asList(OpType.NONE)));
     }
             
     
@@ -94,7 +106,14 @@ public class Instruction {
      * ("Is my operand compatible with me?")
      */
     private boolean operandValidityCheck(){
-        String insName = insType.toString();
+        // New code.
+        
+        // vv Most important line in this class. vv
+        if (!validOperands.get(insType).contains(opType)){
+            String err = String.format("%s: invalid %s operand.", insType, opType);
+        } else return true;
+        
+        // Old code.
         
         // We assume Instruction#operandType(op) == opType. InsParser did its job.
         switch(opType){
