@@ -51,25 +51,6 @@ public class Instruction {
         validOperands.put(InsType.HALT, 
                 new ArrayList<OpType>(Arrays.asList(OpType.NONE)));
     }
-            
-    
-    // Instructions that can take no operands.
-    static ArrayList<InsType> INST_TAKES_NONE = 
-            new ArrayList<InsType>(Arrays.asList(InsType.HALT));
-    
-    // Instructions that can take a direct or indirect (numeric) operand.
-    static ArrayList<InsType> INST_TAKES_NUM_DIR_IND = 
-            new ArrayList<InsType>(Arrays.asList(InsType.LOAD, InsType.STORE, InsType.READ, 
-                    InsType.WRITE, InsType.ADD, InsType.SUB, InsType.MUL, InsType.DIV));
-    
-    // Instructions that can take a numeric literal operand.
-    static ArrayList<InsType> INST_TAKES_NUM_LIT = 
-            new ArrayList<InsType>(Arrays.asList(InsType.LOAD,
-                    InsType.WRITE, InsType.ADD, InsType.SUB, InsType.MUL, InsType.DIV));
-    
-    // Instructions that can take a string (name) operand.
-    static ArrayList<InsType> INST_TAKES_NAME = 
-        new ArrayList<InsType>(Arrays.asList(InsType.JUMP, InsType.JZERO, InsType.JGTZ));
     
     enum OpType {
         NONE,           // No operand.
@@ -84,62 +65,17 @@ public class Instruction {
     String op;  // Instruction operand. Either one or none.
     
     /**
-     * Given a string that represents an operand, return the operand type.
-     * @param str String that represents an operand.
-     * @return OpType, null if no matching type was found.
-     */
-    public static OpType operandType(String str){
-//        if (str.matches("[=*]?\\d+"));
-        if (str.matches("\\d+")) return OpType.NUM_DIRECT;
-        if (str.matches("=\\d+")) return OpType.NUM_LITERAL;
-        if (str.matches("*\\d+")) return OpType.NUM_INDIRECT;
-        if (str.matches("[A-z_]+")) return OpType.NAME;
-        if (str.matches("") || str == null) return OpType.NONE;
-        else {
-            System.err.println(str + ": Unknown operand type.");
-            return null;    // return NONE?
-        }
-    }
-    
-    /**
      * Check validity of operand, relative to the type of this instruction.
      * ("Is my operand compatible with me?")
      */
     private boolean operandValidityCheck(){
-        // New code.
+        assert(opType != null);
         
-        // vv Most important line in this class. vv
+        // "If the operand type is not within the valid types for this instruction type..."
         if (!validOperands.get(insType).contains(opType)){
-            String err = String.format("%s: invalid %s operand.", insType, opType);
+            System.err.println(String.format("%s: invalid %s operand.", insType, opType));
+            return false;
         } else return true;
-        
-        // Old code.
-        
-        // We assume Instruction#operandType(op) == opType. InsParser did its job.
-        switch(opType){
-        case NAME:
-            if (!INST_TAKES_NAME.contains(insType)){
-            System.err.println(insName + ": invalid name operand."); return false; }
-            else return true;
-        case NONE:
-            if (!INST_TAKES_NONE.contains(insType)){
-            System.err.println(insName + ": needs an operand."); return false; }
-            else return true;
-        case NUM_DIRECT:
-            if (!INST_TAKES_NUM_DIR_IND.contains(insType)){ 
-            System.err.println(insName + ": needs an operand."); return false; }
-            else return true;
-        case NUM_INDIRECT:
-            if (!INST_TAKES_NUM_DIR_IND.contains(insType)){
-            System.err.println(insName + ": needs an operand."); return false; }
-            else return true;
-        case NUM_LITERAL:
-            if (!INST_TAKES_NONE.contains(insType)){
-            System.err.println(insName + ": needs an operand."); return false; }
-            else return true;
-        }
-        System.err.println("Null opType or something? error.");
-        return false;
     }
     
     /**
