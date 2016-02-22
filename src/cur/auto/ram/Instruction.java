@@ -7,8 +7,8 @@ public class Instruction {
     enum InsType {
         LOAD,   // Put value from specified register (or literal) into accumulator.
         STORE,  // Store value from accumulator into specified register.
-        READ,   // Read from tape and write into 'op' registry.
-        WRITE,  // Write 'op' into output registry.
+        READ,   // Read from input tape and write into specified register.
+        WRITE,  // Write to output tape from specified register.
         ADD,
         SUB,
         MUL,
@@ -19,9 +19,33 @@ public class Instruction {
         JGTZ,
     }
     
+    enum OpType {
+        NONE,       // No operand.
+        LITERAL,    // Literal operand.
+        DIRECT,     // Direct operand.
+        INDIRECT,   // Indirect operand.
+    }
+    
     InsType insType;    // Instruction type. LOAD, STORE, READ...
-//    ArrayList<Integer> op;  // Instruction operands. Up to three allowed.
+    OpType opType;  // Operand type.
     String op;  // Instruction operand. Either one or none.
+
+    /**
+     * Check validity of operand, relative to the instruction type.
+     */
+    private void operandValidityCheck(){
+        String insName = insType.toString();
+        if (insType == InsType.HALT){
+            if (opType != OpType.NONE) System.err.println(insName + " does not take operands (error).");
+        } else
+        if (insType != InsType.HALT){
+            if (opType == OpType.NONE) System.err.println(insName + " needs an operand (error).");
+            if (insType == InsType.STORE || insType == InsType.READ || insType == InsType.WRITE){
+                if (opType == OpType.LITERAL)
+                    System.err.println(insName + " does not take a literal operand.");
+            }
+        }
+    }
     
     /**
      * Constructor for instructions with no operand.
@@ -29,8 +53,8 @@ public class Instruction {
      */
     public Instruction(InsType insType) {
         this.insType = insType;
-        if(insType != InsType.HALT)
-            System.err.println("Error: Instruction needs an operand.");
+        this.opType = OpType.NONE;
+        operandValidityCheck();
     }
     
     /**
@@ -40,8 +64,7 @@ public class Instruction {
      */
     public Instruction(InsType insType, String op) {
         this.insType = insType;
-        // Check validity of operand
-        
         this.op = op;
+        operandValidityCheck();
     }
 }
