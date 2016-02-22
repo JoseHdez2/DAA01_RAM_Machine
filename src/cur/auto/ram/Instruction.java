@@ -31,18 +31,25 @@ public class Instruction {
         new ArrayList<InsType>(Arrays.asList(InsType.JUMP, InsType.JZERO, InsType.JGTZ));
     
     enum OpType {
-        NONE,       // No operand.
-        LITERAL,    // Literal operand.
-        DIRECT,     // Direct operand.
-        INDIRECT,   // Indirect operand.
+        NONE,           // No operand.
+        NUM_LITERAL,    // Numeric, literal operand.
+        NUM_DIRECT,     // Numeric, direct operand.
+        NUM_INDIRECT,   // Numeric, indirect operand.
+        NAME,           // Name (String) operand.
     }
     
     InsType insType;    // Instruction type. LOAD, STORE, READ...
     OpType opType;  // Operand type.
     String op;  // Instruction operand. Either one or none.
     
-    public static boolean isNumericOperand(String p){
-        return p.matches("[=*]?\\d+");
+    /**
+     * Given a string that represents an operand, deduce the operand type.
+     * @param str
+     * @return
+     */
+    public static OpType operandType(String str){
+//        if (str.matches("[=*]?\\d+"));
+        if (str.matches("[=*]?\\d+")) return ;
     }
     
     public static boolean isNumericLiteralOperand(String p){
@@ -62,7 +69,8 @@ public class Instruction {
     }
     
     /**
-     * Check validity of operand, relative to the instruction type.
+     * Check validity of operand, relative to the type of this instruction.
+     * ("Is my operand compatible with me?")
      */
     private void operandValidityCheck(){
         String insName = insType.toString();
