@@ -2,6 +2,7 @@ package cur.auto.ram;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Instruction {
     // Instruction type.
@@ -23,6 +24,22 @@ public class Instruction {
     // Static, semantic classifications of instructions. Simplifies operand validity check.
     
     // TODO: would a HashMap<insType, opTypesItTakes> be better? Probably not.
+    
+    // Much needed syntactic sugar. Not sure this static hash thing was a good idea.
+    private static <T> ArrayList<T> newArrayList(Object... objects){
+        ArrayList<T> al = new ArrayList<T>();
+        for (int i = 0; i < objects.length; i++) al.add((T)objects[i]);
+        return al;
+    }
+    
+    private static HashMap<InsType, ArrayList<OpType>> validOperands;
+    static
+    {
+        validOperands = new HashMap<InsType, ArrayList<OpType>>();
+        validOperands.put(InsType.LOAD, newArrayList(OpType.NUM_LITERAL, OpType.NUM_DIRECT, OpType.NUM_INDIRECT));
+        validOperands.put(InsType.HALT, new ArrayList<OpType>(Arrays.asList(OpType.NONE)));
+    }
+            
     
     // Instructions that can take no operands.
     static ArrayList<InsType> INST_TAKES_NONE = 
