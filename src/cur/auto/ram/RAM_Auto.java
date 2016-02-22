@@ -20,7 +20,7 @@ public class RAM_Auto implements Automaton{
     
     SimState simState;  // Current state of the simulation: initial, ongoing or final.
     
-    static String SEP = "|";    // Token separator, for visibly reducing whitespace, etc. TODO: weird phrasing
+    static String SEP = "#";    // Token separator, for visibly reducing whitespace, etc. TODO: weird phrasing
     
     public RAM_Auto(){
         initialize();
@@ -29,15 +29,7 @@ public class RAM_Auto implements Automaton{
     /*
      * AutomatonImpl methods.
      */
-    
-    public Instruction.RefType parseOperandType(String opStr){
-        assert(opStr.matches("[=*]?\\d"));
-        int op = Integer.valueOf(opStr.substring(1));
-        if(opStr.charAt(0) == '=') return Instruction.RefType.LITERAL; 
-        if(opStr.charAt(0) == '*') return Instruction.RefType.INDIRECT;
-        else return Instruction.RefType.DIRECT;
-    }
-    
+
     /*
      * Simulation methods
      */
@@ -73,24 +65,30 @@ public class RAM_Auto implements Automaton{
             lines[i] = lines[i].trim().replaceAll("\\s+", SEP);
         }
         ArrayList<String> lines2 = new ArrayList<String>(Arrays.asList(lines));
-
-        System.out.println(lines2);
         
         // Only keep the lines with code.
         lines2.removeIf(emptyLine());
         
         System.out.println(lines2);
-        System.exit(0);
 
         // Do actual parsing
         for (int i = 0; i < lines2.size(); i++){
-            String[] thisLine = lines2.get(i).split(SEP);
+            String dummy = lines2.get(i); // split() is destructive.
+            String[] thisLine = dummy.split(SEP);
+            System.out.println(lines2.get(i));
+            System.out.println(String.format("thisLine[1]: '%s'", thisLine[1]));
             // Detect tags/"goto"s and add them
-            if (thisLine.length > 1 && thisLine[1] == ":"){
+            if (thisLine.length > 1 && thisLine[1].equals(":")){
+                System.out.println("doopy woop!");
                 gotos.put(thisLine[0], i);  // Add goto with key= token 0 and value= this line's index.
-                thisLine = lines2.get(i).split(":")[1].split(SEP);  // 'Remove' tag/goto.
+                dummy = lines2.get(i); // split() is destructive.
+                thisLine = dummy.substring(dummy.indexOf(':')+2).split(SEP);
+//                thisLine = dummy.split(":")[1].split(SEP);  // 'Remove' tag/goto.
             }
-            assert(thisLine.length <= 2); // Instruction and optional operand
+            
+            // Parse instruction and optional operand
+            System.out.println(String.format("thisLine: '%s'", thisLine));
+            assert(thisLine.length <= 2);
             Instruction.InsType insType = null;
             switch(Instruction.InsType.valueOf(thisLine[0].toUpperCase())){
             case ADD: insType = Instruction.InsType.ADD; break;
@@ -106,10 +104,14 @@ public class RAM_Auto implements Automaton{
             case SUB:insType = Instruction.InsType.SUB; break;
             case WRITE:insType = Instruction.InsType.WRITE; break;
             default:
-                System.out.println("Unrecognized instruction: Halting load process.");
+                System.err.println("Unrecognized instruction: Halting load process.");
                 break;
             }
-//            instructions.add(new Instruction());
+            if (thisLine.length == 2){
+                assert(thisLine[1].matches("[=*]?\\d")); // Check for valid operand syntax.
+                instructions.add(new Instruction(insType, thisLine[1]));
+            }
+            else instructions.add(new Instruction(insType));
         }
     }
 

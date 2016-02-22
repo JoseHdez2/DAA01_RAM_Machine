@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Instruction {
     // Instruction type.
     enum InsType {
-        LOAD,   
-        STORE,  // Write ''
+        LOAD,   // Put value from specified register (or literal) into accumulator.
+        STORE,  // Store value from accumulator into specified register.
         READ,   // Read from tape and write into 'op' registry.
         WRITE,  // Write 'op' into output registry.
         ADD,
@@ -19,21 +19,29 @@ public class Instruction {
         JGTZ,
     }
     
-    // Reference type.
-    enum RefType {
-        LITERAL,    // The operand is the actual value.
-        DIRECT,     // Operand is register index which holds value.
-        INDIRECT,   // Operand is register index which holds register index which holds value.
-    }
-    
     InsType insType;    // Instruction type. LOAD, STORE, READ...
-    RefType refType;    // Operand reference type. LITERAL, DIRECT, INDIRECT...
 //    ArrayList<Integer> op;  // Instruction operands. Up to three allowed.
     String op;  // Instruction operand. Either one or none.
     
-    public Instruction(InsType insType, RefType refType, String op) {
+    /**
+     * Constructor for instructions with no operand.
+     * @param insType
+     */
+    public Instruction(InsType insType) {
         this.insType = insType;
-        this.refType = refType;
+        if(insType != InsType.HALT)
+            System.err.println("Error: Instruction needs an operand.");
+    }
+    
+    /**
+     * Constructor for instructions with a single operand.
+     * @param insType
+     * @param op
+     */
+    public Instruction(InsType insType, String op) {
+        this.insType = insType;
+        // Check validity of operand
+        
         this.op = op;
     }
 }
