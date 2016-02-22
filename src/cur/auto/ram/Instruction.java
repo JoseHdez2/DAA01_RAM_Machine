@@ -40,18 +40,21 @@ public class Instruction {
     InsType insType;    // Instruction type. LOAD, STORE, READ...
     OpType opType;  // Operand type.
     String op;  // Instruction operand. Either one or none.
-
-    /*// nevermind this
-    public static Predicate<String> isNumericOperand(){
-        return p -> p.matches("[=*]?\\d");
-    }
-    
-    public static Predicate<String> isNameOperand(){
-        return p -> p.matches("[A-z_]+");
-    }*/
     
     public static boolean isNumericOperand(String p){
+        return p.matches("[=*]?\\d+");
+    }
+    
+    public static boolean isNumericLiteralOperand(String p){
         return p.matches("[=*]?\\d");
+    }
+    
+    public static boolean isNumericDirectOperand(String p){
+        return p.matches("[=*]?\\d+");
+    }
+    
+    public static boolean isNumericIndirectOperand(String p){
+        return p.matches("[=*]?\\d+");
     }
     
     public static boolean isNameOperand(String p){
