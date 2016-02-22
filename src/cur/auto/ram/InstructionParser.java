@@ -2,9 +2,8 @@ package cur.auto.ram;
 
 /**
  * Instruction knows what an instruction can be.
- * RAM_Auto knows how an instruction behaves.
- * InstructionParser knows what an instruction looks like.
- * *drops mike*
+ * RAM_Auto knows how each instruction behaves.
+ * InstructionParser knows what each instruction looks like.
  * 
  * @author jose
  *

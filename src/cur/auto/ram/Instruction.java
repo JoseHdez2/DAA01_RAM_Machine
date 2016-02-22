@@ -20,9 +20,19 @@ public class Instruction {
         JGTZ,   // Jump to line specified by tag if referenced value is greater than zero.
     }
     
-    // Instructions that take a numeric operand. Simplifies operand validity check.
-    // Note: Some of these don't just need the operand to be numeric (e.g. no literals allowed).
-    static ArrayList<InsType> INST_TYPE_NUMERIC = 
+    // Static, semantic classifications of instructions. Simplifies operand validity check.
+    
+    // Instructions that can take no operands.
+    static ArrayList<InsType> INST_TAKES_NONE = 
+            new ArrayList<InsType>(Arrays.asList(InsType.HALT));
+    
+    // Instructions that can take a numeric operand (may not take all types: see below).
+    static ArrayList<InsType> INST_TYPE_NUM = 
+            new ArrayList<InsType>(Arrays.asList(InsType.LOAD, InsType.STORE, InsType.READ, 
+                    InsType.WRITE, InsType.ADD, InsType.SUB, InsType.MUL, InsType.DIV));
+    
+    // Instructions that DO take a numeric operand, as long as it's NOT literal.
+    static ArrayList<InsType> INST_TYPE_NOT_LITERAL = 
             new ArrayList<InsType>(Arrays.asList(InsType.LOAD, InsType.STORE, InsType.READ, 
                     InsType.WRITE, InsType.ADD, InsType.SUB, InsType.MUL, InsType.DIV));
     
@@ -49,23 +59,15 @@ public class Instruction {
      */
     public static OpType operandType(String str){
 //        if (str.matches("[=*]?\\d+"));
-        if (str.matches("[=*]?\\d+")) return ;
-    }
-    
-    public static boolean isNumericLiteralOperand(String p){
-        return p.matches("[=*]?\\d");
-    }
-    
-    public static boolean isNumericDirectOperand(String p){
-        return p.matches("[=*]?\\d+");
-    }
-    
-    public static boolean isNumericIndirectOperand(String p){
-        return p.matches("[=*]?\\d+");
-    }
-    
-    public static boolean isNameOperand(String p){
-        return p.matches("[A-z_]+");
+        if (str.matches("\\d+")) return OpType.NUM_DIRECT;
+        if (str.matches("=\\d+")) return OpType.NUM_LITERAL;
+        if (str.matches("*\\d+")) return OpType.NUM_INDIRECT;
+        if (str.matches("[A-z_]+")) return OpType.NAME;
+        if (str.matches("") || str == null) return OpType.NONE;
+        else {
+            System.err.println(str + ": Unknown operand type.");
+            return null;    // return NONE?
+        }
     }
     
     /**
