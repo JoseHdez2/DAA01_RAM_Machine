@@ -11,7 +11,7 @@ public class RAM_Sim implements Automaton{
     ArrayList<Instruction> instructions;
     Integer pc;    // RAM Machine program counter AKA instruction pointer. Points to current instruction.
     Integer acc;   // RAM machine accumulator. Starts at zero.
-    ArrayList<Integer> regs;    // RAM machine registers.
+    HashMap<Integer,Integer> regs;    // RAM machine registers.
     HashMap<String,Integer> gotos; // "Goto"s (AKA tags) in the code.
     
     ArrayList<Integer> tapeIn;  // RAM machine input tape.
@@ -46,25 +46,13 @@ public class RAM_Sim implements Automaton{
     }
     
     /**
-     * Write to infinite list.
-     * @param infList Infinite list.
-     * @param ind Index.
-     * @param val Value.
-     */
-    private void writeTo(ArrayList<Integer> infList, int ind, int val){
-        while(ind > infList.size()-1)
-            infList.add(0); // Inflate list with zeroes until we can place the value.
-        infList.set(ind, val);
-    }
-    
-    /**
      * Get from infinite list.
      * @param infList Infinite list.
      * @param ind Index.
      */
-    private Integer getFrom(ArrayList<Integer> infList, int ind){
-        if (ind > infList.size()-1) return 0;
-        else return infList.get(ind);
+    private Integer getFrom(HashMap<Integer, Integer> infList, int key){
+        int val = infList.containsKey(key) ? infList.get(key) : 0;
+        return val;
     }
     
     /*
@@ -106,7 +94,7 @@ public class RAM_Sim implements Automaton{
         // Use case 2: call loadTransitions(), which calls this AND loads new transitions.
         pc = 0; // Point program counter to instruction zero.
         acc = 0; // Set accumulator to zero.
-        regs = new ArrayList<Integer>(); // Wipe RAM registers.
+        regs = new HashMap<Integer, Integer>(); // Wipe RAM registers.
         gotos = new HashMap<String,Integer>();  // Wipe gotos dictionary.
         tapeOut = new ArrayList<Integer>(); // Wipe output tape.
         readyForTakeoff(); // simState = INITIAL if nothing else is missing.
@@ -123,8 +111,8 @@ public class RAM_Sim implements Automaton{
         // move()
         switch(inst.insType){
         case LOAD: acc = getOperandValue(inst.opType, inst.op); pc++; break;
-        case STORE: writeTo(regs, getOperandValue(inst.opType, inst.op), acc); pc++; break;
-        case READ: writeTo(regs, getOperandValue(inst.opType, inst.op), tapeIn.remove(0)); pc++; break;
+        case STORE: regs.put(getOperandValue(inst.opType, inst.op), acc); pc++; break;
+        case READ: regs.put(getOperandValue(inst.opType, inst.op), tapeIn.remove(0)); pc++; break;
         case WRITE: tapeOut.add(getOperandValue(inst.opType, inst.op)); pc++; break;
         case ADD: acc += getOperandValue(inst.opType, inst.op); pc++; break;
         case SUB: acc -= getOperandValue(inst.opType, inst.op); pc++; break;
@@ -159,7 +147,7 @@ public class RAM_Sim implements Automaton{
     public void setInput(String tapeIn) {
         this.tapeIn = new ArrayList<Integer>();
         for(int i = 0; i < tapeIn.length(); i++)
-            this.tapeIn.add(Integer.valueOf(tapeIn.charAt(i)));
+            this.tapeIn.add(Integer.valueOf(String.valueOf(tapeIn.charAt(i))));
         
         System.out.println("tape is " + this.tapeIn.toString());
         readyForTakeoff(); // simState = INITIAL if nothing else is missing.
