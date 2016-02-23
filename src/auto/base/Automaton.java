@@ -1,4 +1,4 @@
-package cur.auto.base;
+package auto.base;
 
 /**
  * Automaton interface.

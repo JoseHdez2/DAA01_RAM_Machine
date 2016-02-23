@@ -1,4 +1,4 @@
-package cur.auto.base;
+package auto.base;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-public class FrameLoad extends JFrame{
+public class RAM_Frame extends JFrame{
     
     Automaton automaton;    // Automaton instance which we simulate.
     JTextField fieldLoad;    // Filepath to load with btnLoad.
@@ -30,7 +30,8 @@ public class FrameLoad extends JFrame{
     
     static String INIT_FILE = "example_files/ram/test1.ram";
     
-    public FrameLoad(Automaton automaton){
+    public RAM_Frame(Automaton automaton){
+        setTitle("RAM Machine");
         setSize(1200, 600);
         setLocationRelativeTo(null);    // Center frame on screen.
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -77,7 +78,11 @@ public class FrameLoad extends JFrame{
     // TODO: this would def be public if I expanded the codebase enough.
     private void updateTraceScreen(){
         System.out.println(automaton.showStatus());
-        paneRight.add(new JLabel(automaton.showStatus()));
+        JTextArea jta = new JTextArea(automaton.showStatus(),0,0);
+//        paneRight.add(new JTextArea(automaton.showStatus(),0,0));
+        paneRight.add(jta);
+        paneRight.repaint();
+        this.repaint();
     }
     
     ActionListener listLoad = new ActionListener(){
@@ -87,7 +92,7 @@ public class FrameLoad extends JFrame{
             System.out.println("Load action.");
             String dataContent = "happy meal";
             try {
-                dataContent = new Scanner(new File("example_files/ram/test2.ram")).useDelimiter("\\Z").next();
+                dataContent = new Scanner(new File(fieldLoad.getText())).useDelimiter("\\Z").next();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

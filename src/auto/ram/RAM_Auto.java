@@ -1,9 +1,9 @@
-package cur.auto.ram;
+package auto.ram;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cur.auto.base.Automaton;
+import auto.base.Automaton;
 
 public class RAM_Auto implements Automaton{
     
@@ -71,7 +71,8 @@ public class RAM_Auto implements Automaton{
         pc = 0; // Point program counter to instruction zero.
         acc = 0; // Set accumulator to zero.
         regs = new ArrayList<Integer>(); // Wipe RAM registers.
-        gotos = new HashMap<String,Integer>();
+        gotos = new HashMap<String,Integer>();  // Wipe gotos logs.
+//        ta
     }
 
     @Override

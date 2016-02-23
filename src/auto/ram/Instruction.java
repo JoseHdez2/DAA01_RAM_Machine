@@ -1,4 +1,4 @@
-package cur.auto.ram;
+package auto.ram;
 
 import java.util.ArrayList;
 import java.util.Arrays;

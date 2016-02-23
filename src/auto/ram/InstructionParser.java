@@ -1,12 +1,12 @@
-package cur.auto.ram;
+package auto.ram;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.Predicate;
 
-import cur.auto.ram.Instruction.InsType;
-import cur.auto.ram.Instruction.OpType;
+import auto.ram.Instruction.InsType;
+import auto.ram.Instruction.OpType;
 
 /**
  * Instruction knows what an instruction can be.
@@ -84,6 +84,7 @@ public class InstructionParser {
                 thisLine = dummy.substring(dummy.indexOf(':')+2).split(SEP);
             }
         } 
+        System.out.println(gotos);
         return gotos;
     }
     
