@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import cur.auto.base.FrameLoad;
 import cur.auto.ram.RAM_Auto;
 
 public class Main {

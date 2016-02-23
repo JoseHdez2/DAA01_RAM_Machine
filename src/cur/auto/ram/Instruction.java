@@ -93,8 +93,9 @@ public class Instruction {
      * @param insType
      * @param op
      */
-    public Instruction(InsType insType, String op) {
+    public Instruction(InsType insType, OpType opType, String op) {
         this.insType = insType;
+        this.opType = opType;
         this.op = op;
         operandValidityCheck();
     }
