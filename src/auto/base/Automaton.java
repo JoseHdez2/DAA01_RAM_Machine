@@ -6,6 +6,10 @@ package auto.base;
  * @author jose
  *
  */
+/**
+ * @author jose
+ *
+ */
 public interface Automaton {
     
     // TODO: no guarantee of possible moves?
@@ -26,6 +30,11 @@ public interface Automaton {
      * Initialize the state of the automaton.
      */
     public void initialize();
+    
+    /**
+     * Set or reset the initial input of the automaton.
+     */
+    public void setInput(String input);
     
     /**
      * Take a step in the simulation.

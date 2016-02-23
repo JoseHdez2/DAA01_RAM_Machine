@@ -15,20 +15,25 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
+import auto.base.Automaton.SimState;
+
 public class RAM_Frame extends JFrame{
     
     Automaton automaton;    // Automaton instance which we simulate.
     JTextField fieldLoad;    // Filepath to load with btnLoad.
     JButton btnLoad;    // Load automaton data from file (and initialize simulation).
+    JTextField fieldInput; // Input tape.
+    JButton btnInput;   // Load input tape.
     JButton btnStep;   // Perform a step of the simulation.
     JButton btnRun;    // Step until the simulation ends.
     Timer runTimer;     // Determines step frequency when running simulation.
-    String dataContent;
+//    String dataContent;
     JTextArea areaCode;
     
     JPanel paneLeft, paneRight;
     
     static String INIT_FILE = "example_files/ram/test1.ram";
+    static String INIT_INP = "1100";
     
     public RAM_Frame(Automaton automaton){
         setTitle("RAM Machine");
@@ -43,13 +48,19 @@ public class RAM_Frame extends JFrame{
         
         this.automaton = automaton;
         
-        
         fieldLoad = new JTextField(INIT_FILE, INIT_FILE.length());
         paneLeft.add(fieldLoad);
         
-        btnLoad = new JButton("Load");
+        btnLoad = new JButton("Load Machine");
         btnLoad.addActionListener(listLoad);
         paneLeft.add(btnLoad);
+        
+        fieldInput = new JTextField(INIT_INP, 15);
+        paneLeft.add(fieldInput);
+        
+        btnInput = new JButton("Load Input");
+        btnInput.addActionListener(listInput);
+        paneLeft.add(btnInput);
         
         btnStep = new JButton("Step");
         btnStep.addActionListener(listStep);
@@ -103,11 +114,25 @@ public class RAM_Frame extends JFrame{
         
     };
     
+    ActionListener listInput = new ActionListener(){
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Load input action.");
+            automaton.setInput(fieldInput.getText());
+        }
+        
+    };
+    
     ActionListener listStep = new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Step action.");
+            // Show initial state.
+            if (automaton.showSimState() == SimState.INITIAL)
+                updateTraceScreen();
+            
             automaton.step();
             // TODO: update on screen.
             updateTraceScreen();

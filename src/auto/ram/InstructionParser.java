@@ -146,7 +146,8 @@ public class InstructionParser {
         
         if (line.length == 2){
             assert(operandType(line[1]) != null); // Check for valid operand syntax.
-            return new Instruction(insType, operandType(line[1]), line[1]);
+            String cleanOp = line[1].replaceAll("[=*]\\d+", "\\d+"); // Remove = * prefixes from operands, if any.
+            return new Instruction(insType, operandType(line[1]), cleanOp);
         }
         else return new Instruction(insType);
     }
