@@ -53,10 +53,10 @@ public class RAM_Auto implements Automaton{
         initialize();
         simState = SimState.INITIAL;
         
-        String programFileContent2 = programFileContent;
+        String programFileContent2 = programFileContent; // assert non-destructiveness.
         instructions = InstructionParser.parseInstructions(programFileContent);
         gotos = InstructionParser.parseGotos(programFileContent);
-        assert(programFileContent.equals(programFileContent2));
+        assert(programFileContent2.equals(programFileContent)); // assert non-destructiveness.
     }
 
     @Override

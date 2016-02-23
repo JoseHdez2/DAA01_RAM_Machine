@@ -78,7 +78,7 @@ public class InstructionParser {
             String[] thisLine = dummy.split(SEP);
             // Detect tags/"goto"s and add them
             if (thisLine.length > 1 && thisLine[1].equals(":")){
-                System.out.println("doopy woop!");
+//                System.out.println("doopy woop!");
                 gotos.put(thisLine[0], i);  // Add goto with key= token 0 and value= this line's index.
                 dummy = lines2.get(i); // split() is destructive.
                 thisLine = dummy.substring(dummy.indexOf(':')+2).split(SEP);
@@ -87,10 +87,17 @@ public class InstructionParser {
         return gotos;
     }
     
+    // TODO: this is a temp debug function.
+    /**
+     * Print a String[] correctly to standard output.
+     * @param strArr String[] to print.
+     */
     private static void print(String[] strArr){
         System.out.print("[");
-        for(int i = 0; i < strArr.length; i++)
-            System.out.print(strArr[i] + ", ");
+        for(int i = 0; i < strArr.length; i++){
+            System.out.print(strArr[i]);
+            if (i != strArr.length-1) System.out.print(", ");
+        }
         System.out.print("]\n");
     }
     
