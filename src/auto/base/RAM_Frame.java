@@ -1,5 +1,6 @@
 package auto.base;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +10,8 @@ import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -29,11 +30,14 @@ public class RAM_Frame extends JFrame{
     Timer runTimer;     // Determines step frequency when running simulation.
 //    String dataContent;
     JTextArea areaCode;
+    JTextArea areaDefinition;
+    JTextArea areaTrace; 
     
     JPanel paneLeft, paneRight;
+    JScrollPane paneRightScroll;
     
-    static String INIT_FILE = "example_files/ram/test1.ram";
-    static String INIT_INP = "1100";
+    static String INIT_FILE = "example_files/ram/test5.ram";
+    static String INIT_INP = "1,2,3,0,-1";
     
     public RAM_Frame(Automaton automaton){
         setTitle("RAM Machine");
@@ -44,7 +48,14 @@ public class RAM_Frame extends JFrame{
         paneLeft = new JPanel();
         paneRight = new JPanel();
         add(paneLeft);
-        add(paneRight);
+//        add(paneRight);
+//        paneRightScroll = new JScrollPane(paneRight);
+        areaTrace = new JTextArea("No trace.",0,0);
+        areaTrace.setEditable(false);
+        
+        paneRightScroll = new JScrollPane(areaTrace);
+//        paneRightScroll.add(paneRight);
+        add(paneRightScroll);
         
         this.automaton = automaton;
         
@@ -76,24 +87,35 @@ public class RAM_Frame extends JFrame{
         areaCode.setEditable(false);
         paneLeft.add(areaCode);
         
+        areaDefinition = new JTextArea("No machine loaded.",0,0);
+        areaDefinition.setEditable(false);
+        paneLeft.add(areaDefinition);
+        
         // http://stackoverflow.com/a/3549341/3399416
 //        JTable table = new JTable(new DefaultTableModel(new Object[]{"Column1", "Column2"}, 2));
 //        DefaultTableModel model = (DefaultTableModel) table.getModel();
 //        model.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
         
 //        paneRight.add(table);
-        
+        areaTrace = new JTextArea("No trace.",0,0);
+        areaTrace.setEditable(false);
+//        paneRightScroll.add(areaTrace);
+        areaTrace.setText("lets eat some cake");
         setVisible(true);
     }
     
     // TODO: this would def be public if I expanded the codebase enough.
     private void updateTraceScreen(){
         System.out.println(automaton.showStatus());
-        JTextArea jta = new JTextArea(automaton.showStatus(),0,0);
+//        JTextArea jta = new JTextArea(automaton.showStatus(),0,0);
 //        paneRight.add(new JTextArea(automaton.showStatus(),0,0));
-        paneRight.add(jta);
-        paneRight.repaint();
+//        paneRight.add(jta);
+//        paneRight.repaint();
+        areaTrace.setText(areaTrace.getText() + "\n\n" + automaton.showStatus());
+        paneRightScroll.repaint();
+        paneRightScroll.revalidate();
         this.repaint();
+        this.revalidate();
     }
     
     ActionListener listLoad = new ActionListener(){
@@ -110,6 +132,7 @@ public class RAM_Frame extends JFrame{
             }
             automaton.loadTransitions(dataContent);
             areaCode.setText(dataContent);
+            areaDefinition.setText(automaton.toString());
         }
         
     };
@@ -132,10 +155,12 @@ public class RAM_Frame extends JFrame{
             // Show initial state.
             if (automaton.showSimState() == SimState.INITIAL)
                 updateTraceScreen();
-            
-            automaton.step();
-            // TODO: update on screen.
-            updateTraceScreen();
+            if (automaton.showSimState() != SimState.FINAL){
+                automaton.step();
+                updateTraceScreen();
+            } else {
+//                System.out.println("Machine is in final state."); commented out so it doesn't keep "running".
+            }
         }
         
     };
@@ -156,4 +181,12 @@ public class RAM_Frame extends JFrame{
         }
         
     };
+    /*
+    // since repaint() doesn't seem to work...
+    public void paint(Graphics g){
+        super.paint(g);
+        for (int i = 0; i < this.getComponents().length - 1; i++){
+            this.getComponents()[i].paint(g);;
+        }
+    }*/
 }

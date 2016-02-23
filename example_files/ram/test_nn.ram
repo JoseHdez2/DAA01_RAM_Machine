@@ -1,0 +1,28 @@
+; Programa que calcula N elevado a N. N es introducido como entrada.
+; Si N no es positivo, se devolvera un 0.        
+			
+			READ 1		; input (reg1) = tape[0]
+			LOAD 1
+			
+			JGTZ init	; if input <= 0, pasa a end.
+	
+			LOAD =0		; como input <=0 pasamos a end,
+			STORE 3		; resultado (reg3) = 0.
+	
+	end:	WRITE 3		; escribir resultado
+			HALT		; y parar
+	
+	init:	STORE 2		; iterator (reg2) = input (reg1)
+			STORE 3		; resultado (reg3) = input (reg1)
+	
+	while:	LOAD 3		;
+			MUL 1		; resultado (reg3) *= input (reg1)
+			STORE 3		;
+	
+			LOAD 2		; 
+			SUB =1		; iterador (reg2) -= 1
+			STORE 2		;
+	
+			JGTZ while	; do while iterador > 0
+			
+			JZERO end	; if input <= 0, pasa a end.

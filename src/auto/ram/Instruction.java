@@ -17,8 +17,8 @@ public class Instruction {
         DIV,    // Divide accumulator by referenced (or literal) value.
         HALT,   // Stop program execution.
         JUMP,   // Jump unconditionally to line specified by tag.
-        JZERO,  // Jump to line specified by tag if referenced value is zero.
-        JGTZ,   // Jump to line specified by tag if referenced value is greater than zero.
+        JZERO,  // Jump to line specified by tag if accumulator value is zero.
+        JGTZ,   // Jump to line specified by tag if accumulator value is greater than zero.
     }
     
     // HashMap with key= the instruction type and values= the operand types it takes.
@@ -76,6 +76,14 @@ public class Instruction {
             System.err.println(String.format("%s: invalid %s operand.", insType, opType));
             return false;
         } else return true;
+    }
+    
+    public String toString(){
+        String str = "";
+        str += String.format("[%s ", insType);
+        str += String.format("%s ", opType);
+        str += String.format("%s]", op);
+        return str;
     }
     
     /**
